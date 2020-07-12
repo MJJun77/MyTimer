@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "MyTimer.h"
 
+struct sigevent MyTimer::m_sigev;
+
 MyTimer::MyTimer(void (*cbfunc)(union sigval _sigval)) {
 	if (cbfunc == nullptr) {
 		perror("CB function SHALL BE VALID !!\n");
@@ -8,12 +10,11 @@ MyTimer::MyTimer(void (*cbfunc)(union sigval _sigval)) {
 		return;
 	}
 
-	struct sigevent loc_sigev;	// I don't know why, but if this is defined as member variable, SIGSEGV happens when calling timer_create()
-	loc_sigev.sigev_notify = SIGEV_THREAD;
-	loc_sigev.sigev_notify_function = cbfunc;
-	loc_sigev.sigev_value.sival_int = 0;
+	MyTimer::m_sigev.sigev_notify = SIGEV_THREAD;
+	MyTimer::m_sigev.sigev_notify_function = cbfunc;
+	MyTimer::m_sigev.sigev_value.sival_int = 0;
 
-	if (timer_create(CLOCK_MONOTONIC, &loc_sigev, &m_timerId)) {
+	if (timer_create(CLOCK_MONOTONIC, &MyTimer::m_sigev, &m_timerId)) {
 		perror("timer_create failure !!\n");
 		m_timerId = 0;
 	}

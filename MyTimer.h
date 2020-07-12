@@ -9,16 +9,15 @@
 */
 class MyTimer {
 	private:
-		struct sigevent m_sigev;	
-		    // -> Shall NOT be used !!  Don't know why, but when member var is used, SIGSEGV happens when timer_create().
-			// -> Not used, but SHALL BE DEFINED in g++ v9.3.0 !! Bug ??  If it is not defined, timer doesn't invoked !!
 		timer_t m_timerId;
 		struct itimerspec m_itimerspec;
 	public:
+		static struct sigevent m_sigev;		// sigevent SHALL BE USED AS STATIC !!
 		MyTimer(void (*cbfunc)(union sigval _sigval));
 		bool startTimer(int sec, int nsec, bool repeat);
 		void cancelTimer();
 };
 
+//struct sigevent MyTimer::m_sigev = struct sigevent();
 #endif
 
