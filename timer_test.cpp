@@ -8,9 +8,9 @@ void cb_func_1(union sigval _sigval) {
 
 int main() {
 	MyTimer timer_1(cb_func_1);
-	timer_1.startTimer(3, 0, true);
+	timer_1.startTimer(1, 0, true);
 
-	sleep(20);
+	sleep(7);
 
 	return 0;
 }
